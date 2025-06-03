@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Racing Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a0000 50%, #000 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff0000;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        radial-gradient(circle at center, #ff0000 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, white, #ff0000, white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #ff0000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            margin: 0 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 80px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff0000;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #ff0000;
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+        }
+
+        .card-meta {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Current Events */
+        .current-events {
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-live {
+            background: #ff0000;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-upcoming {
+            background: #ffa500;
+            color: black;
+        }
+
+        .status-completed {
+            background: #888;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Driver Stats */
+        .driver-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .driver-stats {
+                flex-direction: column;
+            }
+        }
+
+        /* Hidden sections initially */
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        #home {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🏁 F1 Central</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="showSection('home')">Home</a></li>
+                <li><a href="#" onclick="showSection('races')">Races</a></li>
+                <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
+                <li><a href="#" onclick="showSection('teams')">Teams</a></li>
+                <li><a href="#" onclick="showSection('news')">News</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <div id="home" class="section-content">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>FORMULA 1</h1>
+                <p>Experience the thrill of the fastest motorsport on Earth</p>
+                <p>Get the latest race schedules, driver standings, team updates, and breaking news from the world of Formula 1 racing.</p>
+                <div>
+                    <a href="#" onclick="showSection('races')" class="btn">View Race Calendar</a>
+                    <a href="#" onclick="showSection('drivers')" class="btn btn-outline">Meet the Drivers</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <!-- Current Events -->
+                <section class="section">
+                    <h2 class="section-title">🔴 Current Events</h2>
+                    <div class="current-events">
+                        <div class="event-item">
+                            <div>
+                                <h4>Abu Dhabi Grand Prix - Race Day</h4>
+                                <p>Yas Marina Circuit, UAE</p>
+                            </div>
+                            <span class="event-status status-live">LIVE</span>
+                        </div>
+                        <div class="event-item">
+                            <div>
+                                <h4>Post-Season Testing</h4>
+                                <p>December 10-12, 2024</p>
+                            </div>
+                            <span class="event-status status-upcoming">UPCOMING</span>
+                        </div>
+                        <div class="event-item">
+                            <div>
+                                <h4>2024 Season Review</h4>
+                                <p>December 15, 2024</p>
+                            </div>
+                            <span class="event-status status-upcoming">SCHEDULED</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Upcoming Races -->
+                <section class="section">
+                    <h2 class="section-title">🏁 Upcoming Races</h2>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <h3>Bahrain Grand Prix</h3>
+                            <div class="card-meta">📍 Bahrain International Circuit • 🗓️ March 2, 2025 • ⏰ 15:00 UTC</div>
+                            <p>Season opener at the iconic Bahrain International Circuit under the lights.</p>
+                            <a href="#" class="btn" style="margin-top: 1rem;">Race Details</a>
+                        </div>
+                        <div class="card">
+                            <h3>Saudi Arabian Grand Prix</h3>
+                            <div class="card-meta">📍 Jeddah Corniche Circuit • 🗓️ March 9, 2025 • ⏰ 17:00 UTC</div>
+                            <p>High-speed street circuit racing through the streets of Jeddah.</p>
+                            <a href="#" class="btn" style="margin-top: 1rem;">Race Details</a>
+                        </div>
+                        <div class="card">
+                            <h3>Australian Grand Prix</h3>
+                            <div class="card-meta">📍 Albert Park Circuit • 🗓️ March 24, 2025 • ⏰ 05:00 UTC</div>
+                            <p>The classic Albert Park circuit returns for another thrilling race.</p>
+                            <a href="#" class="btn" style="margin-top: 1rem;">Race Details</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Latest News -->
+                <section class="section">
+                    <h2 class="section-title">📰 Latest News</h2>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <h3>Max Verstappen Secures Fourth Championship</h3>
+                            <div class="card-meta">🕒 2 hours ago</div>
+                            <p>Red Bull's Max Verstappen clinches his fourth consecutive world championship with a dominant performance...</p>
+                        </div>
+                        <div class="card">
+                            <h3>New Regulations for 2025 Season</h3>
+                            <div class="card-meta">🕒 1 day ago</div>
+                            <p>FIA announces significant changes to aerodynamic regulations for the upcoming 2025 season...</p>
+                        </div>
+                        <div class="card">
+                            <h3>Mercedes Announces Driver Lineup</h3>
+                            <div class="card-meta">🕒 3 days ago</div>
+                            <p>Mercedes-AMG confirms their driver pairing for the 2025 Formula 1 season...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Races Section -->
+    <div id="races" class="section-content">
+        <div class="main-content">
+            <div class="container">
+                <h2 class="section-title">🏁 2025 Race Calendar</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Round 1: Bahrain GP</h3>
+                        <div class="card-meta">📍 Sakhir, Bahrain • 🗓️ March 2, 2025</div>
+                        <p><strong>Circuit:</strong> Bahrain International Circuit<br>
+                        <strong>Laps:</strong> 57 • <strong>Distance:</strong> 308.238 km<br>
+                        <strong>Lap Record:</strong> 1:31.447 (Pedro de la Rosa, 2005)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">20</div>
+                                <div>Drivers</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">5.412</div>
+                                <div>Track Length (km)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Round 2: Saudi Arabian GP</h3>
+                        <div class="card-meta">📍 Jeddah, Saudi Arabia • 🗓️ March 9, 2025</div>
+                        <p><strong>Circuit:</strong> Jeddah Corniche Circuit<br>
+                        <strong>Laps:</strong> 50 • <strong>Distance:</strong> 308.450 km<br>
+                        <strong>Lap Record:</strong> 1:30.734 (Lewis Hamilton, 2021)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">27</div>
+                                <div>Corners</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">6.174</div>
+                                <div>Track Length (km)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Round 3: Australian GP</h3>
+                        <div class="card-meta">📍 Melbourne, Australia • 🗓️ March 24, 2025</div>
+                        <p><strong>Circuit:</strong> Albert Park Circuit<br>
+                        <strong>Laps:</strong> 58 • <strong>Distance:</strong> 307.574 km<br>
+                        <strong>Lap Record:</strong> 1:24.125 (Charles Leclerc, 2024)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">14</div>
+                                <div>Corners</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">5.303</div>
+                                <div>Track Length (km)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drivers Section -->
+    <div id="drivers" class="section-content">
+        <div class="main-content">
+            <div class="container">
+                <h2 class="section-title">🏎️ 2024 Driver Standings</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>1. Max Verstappen</h3>
+                        <div class="card-meta">🏎️ Red Bull Racing • 🇳🇱 Netherlands • Age: 27</div>
+                        <p><strong>Career Highlights:</strong><br>
+                        • 4x World Champion (2021, 2022, 2023, 2024)<br>
+                        • 61 Race Wins • 40 Pole Positions<br>
+                        • Youngest driver to win a Grand Prix (18 years, 228 days)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">575</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">9</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>2. Lando Norris</h3>
+                        <div class="card-meta">🏎️ McLaren • 🇬🇧 Great Britain • Age: 25</div>
+                        <p><strong>Career Highlights:</strong><br>
+                        • 3 Race Wins • 13 Podiums<br>
+                        • Rising star with exceptional racecraft<br>
+                        • Youngest British driver to score points</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">356</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">3</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>3. Charles Leclerc</h3>
+                        <div class="card-meta">🏎️ Ferrari • 🇲🇨 Monaco • Age: 27</div>
+                        <p><strong>Career Highlights:</strong><br>
+                        • 8 Race Wins • 26 Pole Positions<br>
+                        • Ferrari's current lead driver<br>
+                        • Known for exceptional qualifying pace</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">315</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">2</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teams Section -->
+    <div id="teams" class="section-content">
+        <div class="main-content">
+            <div class="container">
+                <h2 class="section-title">🏆 2024 Constructor Standings</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>1. Red Bull Racing</h3>
+                        <div class="card-meta">🇦🇹 Austria • Founded: 2005 • Base: Milton Keynes, UK</div>
+                        <p><strong>Drivers:</strong> Max Verstappen, Sergio Pérez<br>
+                        <strong>Engine:</strong> Honda RBPT<br>
+                        <strong>Team Principal:</strong> Christian Horner<br>
+                        <strong>Championships:</strong> 6 Constructors' (2010-2013, 2022-2023)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">860</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">9</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>2. McLaren</h3>
+                        <div class="card-meta">🇬🇧 Great Britain • Founded: 1963 • Base: Woking, UK</div>
+                        <p><strong>Drivers:</strong> Lando Norris, Oscar Piastri<br>
+                        <strong>Engine:</strong> Mercedes<br>
+                        <strong>Team Principal:</strong> Andrea Stella<br>
+                        <strong>Championships:</strong> 8 Constructors' (1974, 1984-1985, 1988-1991, 1998)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">666</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">4</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>3. Ferrari</h3>
+                        <div class="card-meta">🇮🇹 Italy • Founded: 1929 • Base: Maranello, Italy</div>
+                        <p><strong>Drivers:</strong> Charles Leclerc, Carlos Sainz<br>
+                        <strong>Engine:</strong> Ferrari<br>
+                        <strong>Team Principal:</strong> Frédéric Vasseur<br>
+                        <strong>Championships:</strong> 16 Constructors' (Most recent: 2008)</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-number">652</div>
+                                <div>Points 2024</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">5</div>
+                                <div>Wins 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Section -->
+    <div id="news" class="section-content">
+        <div class="main-content">
+            <div class="container">
+                <h2 class="section-title">📰 Latest F1 News</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Verstappen Clinches Fourth Championship</h3>
+                        <div class="card-meta">🕒 December 1, 2024 • Formula1.com</div>
+                        <p>Max Verstappen has secured his fourth consecutive Formula 1 World Championship with a masterful drive in Abu Dhabi. The Dutch driver's consistency throughout the 2024 season has been remarkable, winning 9 out of 24 races and finishing on the podium in 18 races. His championship victory comes after a thrilling season-long battle with Lando Norris and the resurgent McLaren team.</p>
+                    </div>
+                    <div class="card">
+                        <h3>2025 Regulation Changes Announced</h3>
+                        <div class="card-meta">🕒 November 30, 2024 • FIA Official</div>
+                        <p>The FIA has announced significant changes to Formula 1 regulations for the 2025 season. Key updates include modifications to aerodynamic rules aimed at improving wheel-to-wheel racing, new sustainability requirements for power units, and enhanced safety measures following extensive research. Teams will need to adapt their car designs significantly for the upcoming season.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Lewis Hamilton Joins Ferrari</h3>
+                        <div class="card-meta">🕒 November 28, 2024 • Scuderia Ferrari</div>
+                        <p>In a shocking move that has sent ripples through the Formula 1 paddock, seven-time world champion Lewis Hamilton will join Scuderia Ferrari for the 2025 season. The British driver will partner with Charles Leclerc in what promises to be one of the strongest driver lineups on the grid. Hamilton expressed his excitement about achieving his childhood dream of racing for the Italian team.</p>
+                    </div>
+                    <div class="card">
+                        <h3>McLaren's Remarkable Comeback</h3>
+                        <div class="card-meta">🕒 November 25, 2024 • McLaren Racing</div>
+                        <p>McLaren's 2024 season has been nothing short of extraordinary. After years of struggling in the midfield, the Woking-based team has returned to regular race-winning form. With innovative aerodynamic solutions and exceptional driver performances from Lando Norris and Oscar Piastri, McLaren has emerged as Red Bull's primary championship challenger.</p>
+                    </div>
+                    <div class="card">
+                        <h3>New Sprint Format Success</h3>
+                        <div class="card-meta">🕒 November 22, 2024 • Formula1.com</div>
+                        <p>The revised Sprint weekend format introduced in 2024 has been hailed as a success by teams, drivers, and fans alike. The new format, featuring a separate Sprint qualifying session and revised points distribution, has provided more competitive racing and closer championship battles. The FIA has confirmed the format will continue into the 2025 season with minor refinements.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Rookie Sensations of 2024</h3>
+                        <div class="card-meta">🕒 November 20, 2024 • Racing News</div>
+                        <p>The 2024 season has showcased remarkable talent from rookie drivers entering Formula 1. Several newcomers have impressed with their racecraft, adaptability, and mature approach to high-pressure situations. Their performances have sparked discussions about the strength of the current driver development programs and the bright future of Formula 1.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('navLinks').classList.remove('active');
+        }
+
+        function toggleNav() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Update current events status
+        function updateCurrentEvents() {
+            const now = new Date();
+            const events = document.querySelectorAll('.event-item');
+            
+            // This is a simple simulation - in a real app, you'd fetch live data
+            events.forEach((event, index) => {
+                const status = event.querySelector('.event-status');
+                const hour = now.getHours();
+                
+                // Simulate different event statuses based on time
+                if (index === 0 && hour >= 14 && hour <= 17) {
+                    status.textContent = 'LIVE';
+                    status.className = 'event-status status-live';
+                } else if (index === 0) {
+                    status.textContent = 'COMPLETED';
+                    status.className = 'event-status status-completed';
+                }
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update current events status
+            updateCurrentEvents();
+            
+            // Update events every minute
+            setInterval(updateCurrentEvents, 60000);
+            
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Add some interactive features
+        function addInteractivity() {
+            // Add click effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+        }
+
+        // Initialize interactivity
+        addInteractivity();
+    </script>
+</body>
+</html>
